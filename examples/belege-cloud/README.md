@@ -1,6 +1,8 @@
-# Belege Scanner mit Konten (Cloud-Version)
+# Kuatia mit Konten (Cloud-Version)
 
 Diese Version läuft als eigene Webseite, nicht im Claude-Link. Konten, Belege und Fotos liegen in Supabase.
+
+`index.html` wird nicht von Hand bearbeitet, sondern mit `python3 build.py` aus `../belege-scanner/index.html` erzeugt.
 
 ## Einrichtung (einmalig)
 

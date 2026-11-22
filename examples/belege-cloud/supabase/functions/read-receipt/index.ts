@@ -60,12 +60,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const msg = await anthropic.beta.messages.create({
-      model: "claude-opus-5-5",
-      max_tokens: 16000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      output_config: { effort: "medium", format: { type: "json_schema", schema: SCHEMA } },
+    // Claude Haiku 5.5: das günstigste Modell, rund 0,02 US-Cent pro Beleg.
+    const msg = await anthropic.messages.create({
+      model: "claude-haiku-5-5",
+      max_tokens: 4000,
+      output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
       messages: [{
         role: "user",
         content: [

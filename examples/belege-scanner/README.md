@@ -1,29 +1,21 @@
-# Belege Scanner
+# Kuatia
 
-Eine eigenständige Web-App (eine einzige HTML-Datei) zum Scannen von Belegen, mit Guaraní (PYG) als Hauptwährung und Umrechnung von USD, BRL, ARS und EUR.
+Kuatia (Guaraní für „Papier, Schriftstück“) ist eine Ausgaben-App für Belege aus Paraguay: Ticket oder Factura fotografieren, Claude liest Händler, Betrag, Währung, Datum und RUC aus, die App wertet alles in Guaraní aus.
+
+`index.html` ist die gemeinsame App. Sie läuft
+
+- **lokal / als Claude-Vorschau:** Belege liegen im Browser (IndexedDB), gelesen wird über Claude in der Vorschau, einen eigenen KI-Server oder die Texterkennung im Browser.
+- **als Cloud-Version mit Konten:** siehe `../belege-cloud` (wird mit `python3 build.py` aus dieser Datei gebaut).
 
 ## Funktionen
 
-- **Scannen & Hochladen:** Kamera (Handy), Bilder, PDFs, mehrere Dateien gleichzeitig, Drag & Drop
-- **Automatische Erkennung** von Händler, Betrag, Datum, Kategorie und Typ (Rechnung/Quittung)
-  - OCR läuft lokal im Browser (Tesseract.js, Spanisch), erkennt RUC, Total a pagar und Factura/Ticket
-  - Bei digitalen PDFs wird direkt der eingebettete Text gelesen
-  - Optional: KI-Erkennung über eine OpenAI-kompatible API, z. B. FreeLLMAPI (`http://localhost:3001/v1`)
-- **Übersicht:** Gesamtausgaben, Anzahl, Durchschnitt, Top-Kategorie, Vergleich mit dem Vorzeitraum
-- **Diagramme:** Ausgaben nach Kategorie (Donut), Monatsverlauf (gestapelt), Top-Händler
-- **Belegliste** mit Suche und Filtern, Bearbeiten und Löschen
-- **Export:** CSV (Excel-kompatibel), JSON-Backup und Import
-- Hell- und Dunkelmodus, für Handy optimiert
+- Übersicht mit Betrag, Vergleich zum Vormonat, Monatsbudget mit Tempo-Markierung
+- Hinweis-Karten: größter Posten, Hochrechnung, teuerster Tag, stärkste Veränderung, Stammhändler
+- Verlauf pro Tag (Balken oder Kalender) und pro Monat, alles anklickbar
+- Kategorien-Ring mit Detailansicht und Budget pro Kategorie
+- Händler mit Marken-Kacheln (Markenfarben, keine Original-Logos), Detailansicht pro Händler und Tag
+- Guaraní als Hauptwährung, USD/BRL/ARS/EUR mit eigenem Kurs pro Beleg
+- CSV-Export, Backup, Rückgängig beim Löschen, Hell- und Dunkelmodus
+- Tastatur: `N` neuer Beleg, `/` Suche, Pfeiltasten wechseln den Zeitraum
 
-Alle Daten bleiben lokal im Browser (IndexedDB).
-
-## Starten
-
-```bash
-cd examples/belege-scanner
-python3 -m http.server 8080
-# dann http://localhost:8080 öffnen
-```
-
-Auf dem Handy: Rechner und Handy im selben WLAN, `http://<IP-des-Rechners>:8080` öffnen.
-Für den Kamera-Zugriff über das Netzwerk ist meist HTTPS nötig; der Datei-Upload („Dateien wählen“ → Foto aufnehmen) funktioniert aber auch ohne.
+Icons: [Lucide](https://lucide.dev) (ISC-Lizenz), eingebettet.
