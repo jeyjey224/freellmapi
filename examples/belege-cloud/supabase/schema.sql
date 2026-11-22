@@ -21,6 +21,10 @@ create index if not exists receipts_user_date on public.receipts (user_id, date 
 
 alter table public.receipts enable row level security;
 
+-- Angemeldete Nutzer dürfen die Tabelle verwenden; welche Zeilen, regeln die Policies.
+grant select, insert, update, delete on public.receipts to authenticated;
+revoke all on public.receipts from anon;
+
 drop policy if exists "eigene Belege" on public.receipts;
 create policy "eigene Belege" on public.receipts
   for all to authenticated
