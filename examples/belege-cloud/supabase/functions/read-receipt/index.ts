@@ -8,10 +8,15 @@ const CATEGORIES = [
   "Lebensmittel", "Restaurant & Café", "Tanken & Auto", "Mobilität", "Gesundheit", "Wohnen & Haushalt",
   "Elektronik", "Kleidung", "Telefon & Internet", "Freizeit & Abos", "Online & Courier", "Gebühren & Steuern", "Sonstiges",
 ];
+const GROUPS = [
+  "Obst & Gemüse", "Fleisch & Fisch", "Milch & Käse", "Brot & Backwaren", "Grundnahrung", "Getränke", "Alkohol", "Snacks & Süßes",
+  "Haushalt & Reinigung", "Körperpflege", "Medikamente", "Essen & Trinken", "Kraftstoff", "Elektronik & Zubehör", "Kleidung & Schuhe",
+  "Dienstleistung", "Sonstiges",
+];
 const SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["merchant", "ruc", "date", "amount", "currency", "category", "type"],
+  required: ["merchant", "ruc", "date", "amount", "currency", "category", "type", "items"],
   properties: {
     merchant: { type: "string", description: "Name des Geschäfts ohne S.A. oder S.R.L." },
     ruc: { type: "string", description: "RUC des Geschäfts wie 80012345-6, sonst leer" },
@@ -20,12 +25,28 @@ const SCHEMA = {
     currency: { type: "string", enum: ["PYG", "USD", "BRL", "ARS", "EUR"] },
     category: { type: "string", enum: CATEGORIES },
     type: { type: "string", enum: ["Rechnung", "Quittung"], description: "Rechnung bei Factura, sonst Quittung" },
+    items: {
+      type: "array",
+      description: "Einzelne Positionen des Belegs, leer wenn keine lesbar",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["name", "qty", "amount", "group"],
+        properties: {
+          name: { type: "string", description: "Kurzer, lesbarer Produktname" },
+          qty: { type: "number", description: "Menge, Stück oder kg/Liter" },
+          amount: { type: "number", description: "Zeilenbetrag" },
+          group: { type: "string", enum: GROUPS },
+        },
+      },
+    },
   },
 };
 const PROMPT = `Lies diesen Beleg (Ticket, Factura oder Rechnung, meist aus Paraguay) und gib die Daten zurück.
 Guaraní haben keine Dezimalstellen: "125.000" bedeutet 125000. Ohne Währungsangabe ist es PYG.
 Der Betrag ist der Endbetrag (TOTAL A PAGAR), nicht Zwischensumme, IVA, Efectivo oder Vuelto.
-Ist ein Feld nicht lesbar, gib für Text einen leeren String zurück.`;
+Ist ein Feld nicht lesbar, gib für Text einen leeren String zurück.
+Lies alle Produktzeilen mit Menge und Zeilenbetrag und ordne jede einer Gruppe zu.`;
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -63,7 +84,7 @@ Deno.serve(async (req) => {
     // Claude Haiku 5.5: das günstigste Modell, rund 0,02 US-Cent pro Beleg.
     const msg = await anthropic.messages.create({
       model: "claude-haiku-5-5",
-      max_tokens: 4000,
+      max_tokens: 8000,
       output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
       messages: [{
         role: "user",

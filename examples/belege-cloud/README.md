@@ -7,6 +7,7 @@ Diese Version läuft als eigene Webseite, nicht im Claude-Link. Konten, Belege u
 ## Einrichtung (einmalig)
 
 1. **Tabelle anlegen:** Im Supabase-Dashboard unter *SQL Editor* den Inhalt von `supabase/schema.sql` einfügen und *Run* klicken.
+   Danach genauso `supabase/update-2.sql` ausführen (Produkte pro Beleg, Budget und Eingänge pro Monat).
 2. **Anmeldung konfigurieren:** Unter *Authentication → URL Configuration*
    - *Site URL*: die Adresse, unter der die App läuft (lokal z. B. `http://localhost:8080`)
    - *Redirect URLs*: dieselbe Adresse eintragen, damit Bestätigungs- und Reset-Links funktionieren.

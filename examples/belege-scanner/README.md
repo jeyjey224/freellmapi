@@ -9,12 +9,13 @@ Kuatia (Guaraní für „Papier, Schriftstück“) ist eine Ausgaben-App für Be
 
 ## Funktionen
 
-- Übersicht mit Betrag, Vergleich zum Vormonat, Monatsbudget mit Tempo-Markierung
+- Alles in Guaraní; Fremdwährungen werden mit dem Kurs des Belegs umgerechnet
+- Geld pro Monat: Budget und Eingänge (z. B. Gehalt) eintragen, „Übrig“ auf einen Blick
+- Produkte: Claude liest die Positionen mit, eigene Ansicht nach Produktgruppen und Top-Produkten
 - Hinweis-Karten: größter Posten, Hochrechnung, teuerster Tag, stärkste Veränderung, Stammhändler
 - Verlauf pro Tag (Balken oder Kalender) und pro Monat, alles anklickbar
-- Kategorien-Ring mit Detailansicht und Budget pro Kategorie
-- Händler mit Marken-Kacheln (Markenfarben, keine Original-Logos), Detailansicht pro Händler und Tag
-- Guaraní als Hauptwährung, USD/BRL/ARS/EUR mit eigenem Kurs pro Beleg
+- Kategorien-Ring: beim Drüberfahren teuerste Belege und Produktgruppen, Klick öffnet Details mit Budget
+- Händler mit Firmenlogos (einmalig von den Webseiten geladen und eingebettet, Markenrechte bei den jeweiligen Firmen), Detailansicht pro Händler und Tag
 - CSV-Export, Backup, Rückgängig beim Löschen, Hell- und Dunkelmodus
 - Tastatur: `N` neuer Beleg, `/` Suche, Pfeiltasten wechseln den Zeitraum
 
