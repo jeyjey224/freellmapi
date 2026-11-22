@@ -20,7 +20,11 @@ Die Dateien (`index.html`, `config.js`) lassen sich kostenlos bei Netlify, Cloud
 
 ## Lesen der Belegfotos
 
-- **Standard:** Texterkennung direkt im Browser (Tesseract). Das Foto verlässt das Gerät nicht.
+- **Mit Claude (empfohlen):** Die Edge Function `supabase/functions/read-receipt` schickt das Foto mit deinem Anthropic-Schlüssel an Claude. Einrichtung:
+  1. `supabase/scans.sql` im SQL Editor ausführen (Tageslimit pro Konto).
+  2. Unter *Edge Functions → Secrets* das Secret `ANTHROPIC_API_KEY` anlegen.
+  3. Unter *Edge Functions → Deploy a new function → Via Editor* den Namen `read-receipt` wählen, den Inhalt von `index.ts` einfügen und deployen.
+- **Ersatz:** Texterkennung direkt im Browser (Tesseract). Das Foto verlässt das Gerät nicht.
 - **Optional:** Unter *Einstellungen → Erkennung* einen eigenen Server eintragen, zum Beispiel Ollama mit einem Vision-Modell (`http://localhost:11434/v1`). Ollama braucht dafür `OLLAMA_ORIGINS` mit der Adresse der App.
 
 ## Sicherheit

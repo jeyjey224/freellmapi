@@ -638,6 +638,7 @@ const capSample = window.claude?.use ? window.claude.use("sample").catch(() => n
 const capDl = window.claude?.use ? window.claude.use("downloads").catch(() => null) : Promise.resolve(null);
 let sampleBlocked = false;
 async function readerText(){
+  if (uid) return "Claude liest Händler, Betrag, Währung, Datum und RUC aus dem Foto. Geht das nicht, springt die Texterkennung im Browser ein.";
   const s = await capSample;
   if (s && !sampleBlocked) return "Claude liest Händler, Betrag, Währung, Datum und RUC aus dem Foto. Beim ersten Mal fragt Claude einmal nach deiner Erlaubnis.";
   if (settings.aiOn && settings.aiUrl) return "Dein eigener KI-Server liest die Belege aus.";
@@ -1034,6 +1035,21 @@ function cleanAI(o){
   return { merchant:String(o.merchant || "Unbekannt").slice(0, 60), ruc:String(o.ruc || "").slice(0, 20), date:/^\d{4}-\d{2}-\d{2}$/.test(o.date || "") ? o.date : iso(new Date()),
     amount, currency, category:CC[o.category] ? o.category : "Sonstiges", type:o.type === "Rechnung" ? "Rechnung" : "Quittung" };
 }
+let cloudError = "";
+async function readWithCloud(blob){
+  if (!uid || !blob) return null;
+  cloudError = "";
+  try {
+    busy("Claude liest den Beleg", "Meist 5 bis 20 Sekunden");
+    const b64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = () => rej(r.error); r.readAsDataURL(blob); });
+    const { data, error } = await SB.functions.invoke("read-receipt", { body: { image: b64, media_type: "image/jpeg" } });
+    if (error){
+      try { const j = await error.context?.json?.(); cloudError = j?.error || ""; } catch {}
+      return null;
+    }
+    return data && !data.error ? cleanAI(data) : null;
+  } catch { return null; }
+}
 async function readWithClaude(blob){
   const s = await capSample; if (!s || sampleBlocked) return null;
   try { busy("Claude liest den Beleg", "Meist 10 bis 30 Sekunden"); return cleanAI(await s.json(PROMPT, { images:[blob], modelTier:"default" })); }
@@ -1067,13 +1083,14 @@ async function handleFiles(list){
       if (f.type === "application/pdf" || /\.pdf$/i.test(f.name)) ({ canvas, text } = await pdfToCanvas(f));
       else canvas = toCanvas(await loadImg(await readFile(f)), 1800);
       const big = toCanvas(canvas, 1600); busy("Beleg wird gelesen", tag, toCanvas(canvas, 400).toDataURL("image/jpeg", .7));
-      parsed = await readWithClaude(await canvasBlob(big)); if (parsed) source = "Von Claude ausgelesen. Kurz prüfen, dann speichern.";
+      const jpg = await canvasBlob(big); parsed = await readWithCloud(jpg) || await readWithClaude(jpg); if (parsed) source = "Von Claude ausgelesen. Kurz prüfen, dann speichern.";
       if (!parsed){ parsed = await readWithServer(big.toDataURL("image/jpeg", .85)); if (parsed) source = "Von deinem KI-Server ausgelesen. Kurz prüfen, dann speichern."; }
       if (!parsed){
         if (text.replace(/\s/g, "").length < 20){ try { text = await ocr(big); } catch { error = "Automatisch lesen ging hier nicht. Bitte trag die Werte selbst ein."; } }
         if (text){ parsed = parseText(text); source = "Per Texterkennung gelesen. Bitte Betrag und Datum prüfen."; }
       }
     } catch (e) { error = e.message; }
+    if (cloudError && !error) error = cloudError + " Die Werte kommen deshalb aus der Texterkennung im Browser.";
     $("#scanSheet").close();
     const thumb = canvas ? toCanvas(canvas, 1000).toDataURL("image/jpeg", .7) : null;
     const photoBlob = canvas ? await canvasBlob(toCanvas(canvas, 1400)) : null;
