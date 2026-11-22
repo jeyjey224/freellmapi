@@ -1,12 +1,12 @@
 # Belege Scanner
 
-Eine eigenständige Web-App (eine einzige HTML-Datei) zum Scannen von Rechnungen und Quittungen, mit Ausgaben-Übersicht und Diagrammen.
+Eine eigenständige Web-App (eine einzige HTML-Datei) zum Scannen von Belegen, mit Guaraní (PYG) als Hauptwährung und Umrechnung von USD, BRL, ARS und EUR.
 
 ## Funktionen
 
 - **Scannen & Hochladen:** Kamera (Handy), Bilder, PDFs, mehrere Dateien gleichzeitig, Drag & Drop
 - **Automatische Erkennung** von Händler, Betrag, Datum, Kategorie und Typ (Rechnung/Quittung)
-  - OCR läuft lokal im Browser (Tesseract.js, Deutsch)
+  - OCR läuft lokal im Browser (Tesseract.js, Spanisch), erkennt RUC, Total a pagar und Factura/Ticket
   - Bei digitalen PDFs wird direkt der eingebettete Text gelesen
   - Optional: KI-Erkennung über eine OpenAI-kompatible API, z. B. FreeLLMAPI (`http://localhost:3001/v1`)
 - **Übersicht:** Gesamtausgaben, Anzahl, Durchschnitt, Top-Kategorie, Vergleich mit dem Vorzeitraum
