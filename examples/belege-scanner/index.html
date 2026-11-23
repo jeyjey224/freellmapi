@@ -691,11 +691,6 @@ dialog.sheet::backdrop{background:rgba(8,10,14,.45);backdrop-filter:blur(4px)}
           </label>
           <div class="row-actions"><button class="btn primary" id="saveDisp">Speichern</button></div>
         </div>
-        <div class="card">
-          <div class="card-h"><h2>Wechselkurse</h2><span class="muted" style="font-size:13px" id="ratesDate"></span></div>
-          <div class="rates" id="rates"></div>
-          <div class="row-actions"><button class="btn primary" id="saveRates">Kurse speichern</button></div>
-        </div>
         <div class="card" id="aiCard">
           <div class="card-h"><h2>Eigener KI-Server</h2></div>
           <details id="aiDetails">
@@ -1583,18 +1578,11 @@ function renderSettings(){
     : `<div class="acct"><span class="ava">${I("receipt")}</span><div><b style="display:block">Auf diesem Gerät</b><span class="muted" style="font-size:13px">Belege liegen nur in diesem Browser.</span></div></div>`;
   const so = $("#setOut"); if (so) so.onclick = () => SB.auth.signOut();
   $("#budgetIn").value = settings.budget ? num(settings.budget, 0) : "";
-  $("#rates").innerHTML = Object.keys(DEF_RATES).map(c => `<label class="field">1 ${c} in Gs.<input class="input" id="rate-${c}" inputmode="decimal" value="${num(rates[c], 0)}"></label>`).join("");
-  const d = store.get("belege-rates-date", null);
-  $("#ratesDate").textContent = d ? "Stand " + pd(d).toLocaleDateString("de-DE") : "Startwerte, bitte prüfen";
   $("#aiOn").checked = !!settings.aiOn; $("#aiUrl").value = settings.aiUrl || ""; $("#aiKey").value = settings.aiKey || ""; $("#aiModel").value = settings.aiModel || "";
   $("#aiCard").hidden = CLOUD;
   updateReader();
 }
 $("#saveDisp").onclick = () => { settings.budget = parseIn($("#budgetIn").value, "PYG") || 0; store.set("belege-settings", settings); toast("Gespeichert"); render(); };
-$("#saveRates").onclick = () => {
-  for (const c of Object.keys(DEF_RATES)){ const v = parseIn($("#rate-" + c).value, "PYG"); if (v) rates[c] = v; }
-  store.set("belege-rates", rates); store.set("belege-rates-date", iso(new Date())); toast("Kurse gespeichert"); render();
-};
 $("#saveAi").onclick = () => { Object.assign(settings, { aiOn:$("#aiOn").checked, aiUrl:$("#aiUrl").value.trim(), aiKey:$("#aiKey").value.trim(), aiModel:$("#aiModel").value.trim() }); store.set("belege-settings", settings); updateReader(); toast("Gespeichert"); };
 
 /* ============ Dateien ============ */
@@ -1854,6 +1842,7 @@ $("#eForm").addEventListener("submit", async e => {
   const err = m => { $("#eErr").hidden = false; $("#eErr").innerHTML = I("info") + `<span>${esc(m)}</span>`; };
   if (!amount){ err("Bitte einen Betrag eintragen, z. B. 125.000"); $("#fAmount").focus(); return; }
   if (!rate){ err("Bitte den Kurs in Guaraní eintragen."); $("#fRate").focus(); return; }
+  if (cur !== "PYG" && rate !== rates[cur]){ rates[cur] = rate; store.set("belege-rates", rates); }
   Object.assign(r, { merchant:$("#fMerchant").value.trim() || "Unbekannt", amount, currency:cur, rate, date:$("#fDate").value || iso(new Date()), ruc:$("#fRuc").value.trim(), category:$("#fCat").value, type:$("#fType").value, note:$("#fNote").value.trim(), items:cleanEditItems() });
   try {
     if (CLOUD && r._blob){
