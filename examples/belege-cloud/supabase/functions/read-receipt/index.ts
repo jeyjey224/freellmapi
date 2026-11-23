@@ -45,6 +45,7 @@ const SCHEMA = {
 const PROMPT = `Lies diesen Beleg (Ticket, Factura oder Rechnung, meist aus Paraguay) und gib die Daten zurück.
 Guaraní haben keine Dezimalstellen: "125.000" bedeutet 125000. Ohne Währungsangabe ist es PYG.
 Der Betrag ist der Endbetrag (TOTAL A PAGAR), nicht Zwischensumme, IVA, Efectivo oder Vuelto.
+Das Datum steht als Tag/Monat/Jahr, oft mit zweistelligem Jahr: "05/11/26" ist "2026-11-05".
 Ist ein Feld nicht lesbar, gib für Text einen leeren String zurück.
 Lies alle Produktzeilen mit Menge und Zeilenbetrag und ordne jede einer Gruppe zu.`;
 

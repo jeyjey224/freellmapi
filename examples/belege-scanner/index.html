@@ -121,6 +121,7 @@ main{min-width:0;padding-block:26px 56px;padding-left:max(32px,env(safe-area-ins
 .field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted);font-weight:550}
 .input{width:100%;min-width:0;height:44px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:0 13px;font-size:15px}
 .input:focus{border-color:var(--ink);outline:none}
+.input.warn{border-color:var(--warn);box-shadow:0 0 0 3px color-mix(in srgb,var(--warn) 22%,transparent)}
 select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 17px) 52%,calc(100% - 12px) 52%;background-size:5px 5px;background-repeat:no-repeat;padding-right:32px}
 
 /* ---------- Karten ---------- */
@@ -314,6 +315,8 @@ dialog.sheet::backdrop{background:rgba(8,10,14,.45);backdrop-filter:blur(4px)}
 .note{font-size:13px;border-radius:12px;padding:10px 12px;background:var(--surface-2);color:var(--muted);display:flex;gap:8px;align-items:flex-start}
 .note svg.i{width:16px;height:16px;margin-top:1px}
 .note.err{background:var(--bad-soft);color:var(--bad)}
+.note.warn{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--ink)}
+.note.warn svg.i{color:var(--warn)}
 
 /* Scannen */
 .opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -356,7 +359,7 @@ dialog.sheet::backdrop{background:rgba(8,10,14,.45);backdrop-filter:blur(4px)}
 .auth .linkbtn{justify-content:flex-start}
 
 /* Meldung */
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:400;background:var(--ink);color:var(--bg);border-radius:14px;padding:11px 11px 11px 16px;display:flex;align-items:center;gap:14px;font-size:14px;font-weight:500;max-width:calc(100vw - 32px);box-shadow:var(--shadow-lg);animation:pop .2s ease}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:400;background:var(--ink);color:var(--bg);border-radius:14px;padding:11px 11px 11px 16px;display:flex;align-items:center;gap:14px;font-size:14px;font-weight:500;width:max-content;max-width:calc(100vw - 32px);box-shadow:var(--shadow-lg);animation:pop .2s ease}
 .toast button{border:0;background:color-mix(in srgb,var(--bg) 16%,transparent);color:inherit;font-weight:650;padding:6px 10px;border-radius:9px;display:inline-flex;align-items:center;gap:6px}
 .toast button svg.i{width:15px;height:15px}
 
@@ -517,7 +520,6 @@ dialog.sheet::backdrop{background:rgba(8,10,14,.45);backdrop-filter:blur(4px)}
 <symbol id="i-trash-2" viewBox="0 0 24 24"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></symbol>
 <symbol id="i-trending-down" viewBox="0 0 24 24"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7" /><polyline points="16 17 22 17 22 11" /></symbol>
 <symbol id="i-trending-up" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" /></symbol>
-<symbol id="i-undo-2" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></symbol>
 <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></symbol>
 <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></symbol>
 <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" /></symbol>
@@ -769,6 +771,7 @@ dialog.sheet::backdrop{background:rgba(8,10,14,.45);backdrop-filter:blur(4px)}
             <label class="field">Datum<input class="input" id="fDate" type="date"></label>
             <label class="field">RUC<input class="input" id="fRuc" autocomplete="off" placeholder="80012345-6"></label>
           </div>
+          <div class="note warn" id="fDateHint" hidden></div>
           <div class="field">Kategorie<div class="catpick" id="fCatPick" role="radiogroup" aria-label="Kategorie"></div></div>
           <div class="field">Art
             <div class="seg" id="fTypeSeg" style="align-self:flex-start"><button type="button" data-type="Quittung">Ticket</button><button type="button" data-type="Rechnung">Factura</button></div>
@@ -1047,7 +1050,7 @@ function toast(msg, action){
   const t = $("#toast"); clearTimeout(toastTimer);
   $("#toastT").textContent = msg; t.hidden = false;
   const b = $("#toastB"); b.hidden = !action;
-  if (action){ b.innerHTML = I("undo-2") + esc(action.label); b.onclick = () => { t.hidden = true; action.fn(); }; }
+  if (action){ b.innerHTML = I(action.icon || "undo-2") + esc(action.label); b.onclick = () => { t.hidden = true; action.fn(); }; }
   toastTimer = setTimeout(() => t.hidden = true, action ? 6000 : 3200);
 }
 
@@ -1079,6 +1082,7 @@ const sum = list => list.reduce((s, r) => s + inPYG(r), 0);
 const group = (list, key) => list.reduce((o, r) => { const k = key(r); (o[k] ||= { v:0, n:0, items:[] }); o[k].v += inPYG(r); o[k].n++; o[k].items.push(r); return o; }, {});
 const isNowMonth = () => state.y === now0.getFullYear() && state.m === now0.getMonth();
 function isFuture(){ return state.mode === "month" ? (state.y > now0.getFullYear() || (state.y === now0.getFullYear() && state.m >= now0.getMonth())) : state.y >= now0.getFullYear(); }
+function showDate(date){ const dt = pd(date); state.y = dt.getFullYear(); if (state.mode === "month") state.m = dt.getMonth(); render(); }
 function shift(d){
   if (state.mode === "month"){ const dt = new Date(state.y, state.m + d, 1); state.y = dt.getFullYear(); state.m = dt.getMonth(); }
   else if (state.mode === "year") state.y += d;
@@ -1690,7 +1694,8 @@ const PROMPT = `Lies diesen Beleg (Ticket, Factura oder Rechnung, meist aus Para
  "amount": Endbetrag (Total a pagar) als Zahl, "currency": "PYG"|"USD"|"BRL"|"ARS"|"EUR",
  "category": eine von ${JSON.stringify(CATS.map(c => c.id))}, "type": "Rechnung" wenn Factura, sonst "Quittung",
  "items": [{"name": kurzer lesbarer Produktname, "qty": Menge, "amount": Zeilenbetrag, "group": eine von ${JSON.stringify(GROUPS.map(g => g.id))}}] oder [] wenn keine Positionen lesbar}
-Guaraní haben keine Dezimalstellen: "125.000" bedeutet 125000. Ohne Währungsangabe ist es PYG.`;
+Guaraní haben keine Dezimalstellen: "125.000" bedeutet 125000. Ohne Währungsangabe ist es PYG.
+Das Datum steht als Tag/Monat/Jahr, oft mit zweistelligem Jahr: "05/11/26" ist "2026-11-05".`;
 function cleanAI(o){
   const currency = CUR[o.currency] ? o.currency : "PYG";
   let amount = typeof o.amount === "number" ? o.amount : parseFloat(String(o.amount || "").replace(/[^\d.,]/g, "").replace(/\.(?=\d{3})/g, "").replace(",", "."));
@@ -1828,10 +1833,17 @@ function openEditor(r, isNew, source, error){
     $("#eOcrW").hidden = !r.ocrText; $("#eOcr").textContent = r.ocrText || "";
     $("#eSrc").hidden = !source; $("#eSrc").innerHTML = source ? I("sparkles") + `<span>${esc(source)}</span>` : "";
     $("#eErr").hidden = !error; $("#eErr").innerHTML = error ? I("info") + `<span>${esc(error)}</span>` : "";
-    $("#eDel").hidden = isNew; rateRow(); d.showModal(); d.scrollTop = 0;
+    $("#eDel").hidden = isNew; rateRow(); dateHint(); d.showModal(); d.scrollTop = 0;
     if (!r.amount) setTimeout(() => $("#fAmount").focus(), 60);
   });
 }
+function dateHint(){
+  const v = $("#fDate").value, h = $("#fDateHint"), days = v ? Math.round((pd(TODAY) - pd(v)) / 864e5) : 0;
+  const y = Math.floor(days / 365), ago = y ? (y === 1 ? "ein Jahr" : `${y} Jahre`) : `${Math.round(days / 30)} Monate`;
+  const msg = !$("#editSheet")._new || !v ? "" : days < 0 ? "liegt in der Zukunft" : days > 60 ? `liegt ${ago} zurück` : "";
+  h.hidden = !msg; $("#fDate").classList.toggle("warn", !!msg); h.innerHTML = msg ? I("calendar-days") + `<span>Datum prüfen: ${esc(dayLong(v))} ${msg}.</span>` : "";
+}
+$("#fDate").addEventListener("input", dateHint);
 $("#editSheet").addEventListener("close", () => { const f = editDone; editDone = null; f?.(); });
 $("#fCur").onchange = () => { $("#fRate").value = num(rateOf($("#fCur").value), 0); rateRow(); };
 $("#fAmount").oninput = rateRow; $("#fRate").oninput = rateRow;
@@ -1856,10 +1868,10 @@ $("#eForm").addEventListener("submit", async e => {
     r._blob = null;
   } catch (ex) { err("Speichern ging nicht. Prüfe deine Internetverbindung." + (ex?.message ? ` (${ex.message})` : "")); return; }
   const wasNew = d._new; d.close();
-  if (wasNew && state.mode !== "all"){ const dt = pd(r.date); state.y = dt.getFullYear(); state.m = dt.getMonth(); if (state.mode === "year") state.m = now0.getMonth(); }
   await reload();
   if (wasNew && state.view === "settings") go("overview");
-  toast(`${r.merchant} · ${fmt(r.amount, r.currency)} gespeichert`);
+  if (inPer(r)) toast(`${r.merchant} · ${fmt(r.amount, r.currency)} gespeichert`);
+  else { const dt = pd(r.date); toast(`Gespeichert im ${MONL[dt.getMonth()]} ${dt.getFullYear()}`, { label:"Anzeigen", icon:"arrow-right", fn:() => showDate(r.date) }); }
 });
 $("#eDel").onclick = async () => {
   const r = $("#editSheet")._r; await DB.del(r.id); $("#editSheet").close(); await reload();
