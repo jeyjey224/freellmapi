@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Claude Haiku 5.5: das günstigste Modell, rund 0,02 US-Cent pro Beleg.
+    // Claude Haiku 5.5: das günstigste Modell, grob 0,05 bis 0,1 US-Cent pro Beleg.
     const msg = await anthropic.messages.create({
       model: "claude-haiku-5-5",
       max_tokens: 8000,
